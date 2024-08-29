@@ -2,7 +2,7 @@
 // Damn Vulnerable DeFi v4 (https://damnvulnerabledefi.xyz)
 pragma solidity =0.8.25;
 
-import {SafeTransferLib} from "solady/utils/SafeTransferLib.sol";
+import {SafeTransferLib} from "../lib/solady/src/utils/SafeTransferLib.sol";
 
 interface IFlashLoanEtherReceiver {
     function execute() external payable;

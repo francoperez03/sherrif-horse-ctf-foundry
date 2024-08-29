@@ -1,8 +1,8 @@
 1: 
-	forge test --match-test oneTest --match-contract testContract1
+	forge test --match-contract testContract1 -vvvvv
 2: 
-	forge test --match-test oneTest --match-contract testContract2
+	forge test --match-contract testContract2 -vvvvv
 3: 
-	forge test --match-test oneTest --match-contract testContract3
+	forge test --match-contract testContract3 -vvvvv
 4: 
-	forge test --match-test oneTest --match-contract testContract4
+	forge test --match-contract testContract4 -vvvvv
