@@ -2,6 +2,7 @@
 // Damn Vulnerable DeFi v4 (https://damnvulnerabledefi.xyz)
 pragma solidity =0.8.25;
 
+import {SafeTransferLib} from "solady/utils/SafeTransferLib.sol";
 
 interface IFlashLoanEtherReceiver {
     function execute() external payable;
@@ -28,6 +29,7 @@ contract SideEntranceLenderPool {
         delete balances[msg.sender];
         emit Withdraw(msg.sender, amount);
 
+        SafeTransferLib.safeTransferETH(msg.sender, amount);
     }
 
     function flashLoan(uint256 amount) external {
